@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.edu.teamone.backendapp.models.CourseDetails;
 import com.edu.teamone.backendapp.models.CourseMaterial;
 import com.edu.teamone.backendapp.repositories.CourseMaterialRepository;
 

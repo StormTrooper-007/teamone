@@ -2,11 +2,9 @@ package com.edu.teamone.backendapp.services;
 
 import java.util.List;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.edu.teamone.backendapp.models.Role;
 import com.edu.teamone.backendapp.repositories.AppUserRepository;
 import com.edu.teamone.backendapp.security.AppUser;
 
