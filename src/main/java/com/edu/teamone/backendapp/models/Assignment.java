@@ -1,5 +1,7 @@
 package com.edu.teamone.backendapp.models;
 
+import com.edu.teamone.backendapp.security.AppUser;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,9 +22,13 @@ public class Assignment {
     private String submissionUrl;
     private String feedback;
     private String grade;
-    
+
     @ManyToOne
     @JoinColumn(name = "student_registration_id", nullable = false)
     StudentRegistration studentAssignedTo;
-    
+
+    @ManyToOne
+    @JoinColumn(name = "lecturer_id") // Track which lecturer graded this assignment
+    private AppUser lecturer;
+
 }

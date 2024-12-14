@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.edu.teamone.backendapp.models.AppUser;
 import com.edu.teamone.backendapp.repositories.AppUserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,8 +21,9 @@ public class AppUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         AppUser appUser = userRepository.findByUsername(username)
-                .orElseThrow(RuntimeException::new);
-        return new User(appUser.getLastName(), appUser.getPassword(), Collections.emptyList());
+                .orElseThrow(() -> new UsernameNotFoundException("Username: " + username + " not found!"));
+        return new User(appUser.getUsername(), appUser.getPassword(), Collections.emptyList());
     }
-
 }
+
+
