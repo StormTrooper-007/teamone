@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.edu.teamone.backendapp.models.CourseDetails;
 import com.edu.teamone.backendapp.models.CourseMaterial;
 import com.edu.teamone.backendapp.services.CourseMaterialService;
 

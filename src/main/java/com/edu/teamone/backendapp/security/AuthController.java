@@ -1,6 +1,6 @@
 package com.edu.teamone.backendapp.security;
 
-import java.security.Principal;
+
 import java.util.List;
 
 import org.springframework.http.HttpStatus;

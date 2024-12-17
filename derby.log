@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-Mon Dec 16 23:08:41 CET 2024:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.16.1.1 - (1901046): instance a816c00e-0193-d184-2b1e-000001436310 
+Tue Dec 17 06:48:03 CET 2024:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.16.1.1 - (1901046): instance a816c00e-0193-d328-be7b-0000010f8a80 
 on database directory /home/collins/Downloads/backendapp/target/teamonedb with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@4f2410ac 
 Loaded from file:/home/collins/.m2/repository/org/apache/derby/derby/10.16.1.1/derby-10.16.1.1.jar
 java.vendor=Oracle Corporation
