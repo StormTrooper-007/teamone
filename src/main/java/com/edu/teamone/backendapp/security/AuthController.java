@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 
 @RestController
-@RequestMapping("api/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -34,7 +34,6 @@ public class AuthController {
         } catch (IllegalArgumentException ex) {
          throw new IllegalArgumentException("Could no register new user");
         }
-       
     }
 
     @GetMapping("/users")

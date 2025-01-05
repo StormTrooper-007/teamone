@@ -1,5 +1,6 @@
 package com.edu.teamone.backendapp.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -22,8 +23,9 @@ public class CourseDetails {
     private String courseName;
     private String description;
 
+   
     @ManyToMany(mappedBy = "coursesRegistered")
-    private List<StudentRegistration> registeredStudents;
+    private List<StudentRegistration> registeredStudents = new ArrayList<>();
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CourseMaterial> courseMaterials;

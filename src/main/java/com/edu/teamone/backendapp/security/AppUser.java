@@ -33,10 +33,11 @@ public class AppUser {
     private String password;
     private String role;
 
+
     @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private StudentRegistration studentRegistration;
 
-     @OneToMany(mappedBy = "lecturer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "lecturer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Assignment> gradedAssignments;
 
 }

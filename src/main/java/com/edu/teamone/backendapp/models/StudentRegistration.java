@@ -1,5 +1,6 @@
 package com.edu.teamone.backendapp.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.edu.teamone.backendapp.security.AppUser;
@@ -25,18 +26,20 @@ public class StudentRegistration {
     private Long id;
 
 
+
     @OneToOne
     @JoinColumn(name = "user_id",nullable = false)
     private AppUser student;
 
+    
     @ManyToMany
     @JoinTable(
         name = "student_course_registration",
         joinColumns = @JoinColumn(name = "student_id"),
         inverseJoinColumns = @JoinColumn(name = "course_id")
     )
-    private List<CourseDetails> coursesRegistered;
+    private List<CourseDetails> coursesRegistered = new ArrayList<>();
 
     @OneToMany(mappedBy = "studentAssignedTo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Assignment> assignments;
+    private List<Assignment> assignments = new ArrayList<>();
 }

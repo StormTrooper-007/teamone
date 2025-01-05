@@ -26,10 +26,10 @@ public class CourseDetailsController {
 
     private final CourseDetailsService courseDetailsService;
 
-    @PostMapping
-    public ResponseEntity<CourseDetails> addNewCourse(@RequestBody CourseDetails courseDetails) {
+    @PostMapping("/{username}")
+    public ResponseEntity<CourseDetails> addNewCourse(@PathVariable String username, @RequestBody CourseDetails courseDetails) {
         try {
-            courseDetailsService.addCourse(courseDetails);
+           courseDetailsService.addCourse(username, courseDetails);
 
         } catch (IllegalArgumentException e) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

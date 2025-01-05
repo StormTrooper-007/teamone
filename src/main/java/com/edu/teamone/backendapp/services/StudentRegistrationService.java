@@ -2,10 +2,11 @@ package com.edu.teamone.backendapp.services;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
+import com.edu.teamone.backendapp.dtos.CourseDetailsDTO;
+import com.edu.teamone.backendapp.dtos.StudentRegistrationDTO;
 import com.edu.teamone.backendapp.models.CourseDetails;
 import com.edu.teamone.backendapp.models.StudentRegistration;
 import com.edu.teamone.backendapp.repositories.AppUserRepository;
@@ -23,11 +24,27 @@ public class StudentRegistrationService {
     private final CourseDetailsRepository courseDetailsRepository;
     private final StudentRegistrationRepository studentRegistrationRepository;
 
-    public StudentRegistration registerForCourse(String username, Long courseId) {
-        AppUser user = appUserRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    private StudentRegistrationDTO mapToStudentRegistrationDTO(StudentRegistration registration) {
+        // Map coursesRegistered from entities to DTOs
+        List<CourseDetailsDTO> courses = registration.getCoursesRegistered().stream()
+                .map(course -> new CourseDetailsDTO(
+                        course.getId(),
+                        course.getCourseName(),
+                        course.getDescription()))
+                .collect(Collectors.toList());
 
-        if (!(user.getRole().equalsIgnoreCase("student"))) {
+        // Map StudentRegistration fields to StudentRegistrationDTO
+        return new StudentRegistrationDTO(
+                registration.getId(),
+                registration.getStudent().getUsername(),
+                courses);
+    }
+
+    public StudentRegistrationDTO registerForCourse(String username, Long courseId) {
+        AppUser user = appUserRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not logged in"));
+
+        if (!"STUDENT".equalsIgnoreCase(user.getRole())) {
             throw new IllegalArgumentException("only users with role 'student' can register for courses");
         }
 
@@ -35,51 +52,53 @@ public class StudentRegistrationService {
                 .findById(courseId)
                 .orElseThrow(() -> new IllegalArgumentException("course not found"));
 
-        StudentRegistration studentRegistration = studentRegistrationRepository
-                .findById(user.getId())
-                .orElseGet(() -> {
-                    StudentRegistration newStudent = new StudentRegistration();
-                    newStudent.setId(user.getId());
-                    newStudent.setAssignments(new ArrayList<>());
-                    newStudent.setCoursesRegistered(new ArrayList<>());
-                    return studentRegistrationRepository.save(newStudent);
-                });
+        StudentRegistration registration = user.getStudentRegistration();
 
-        if (!studentRegistration.getCoursesRegistered().contains(course)) {
-            studentRegistration.getCoursesRegistered().add(course);
-        } else {
-            throw new IllegalStateException("Student is already registered for this course");
+        if (registration == null) {
+            registration = new StudentRegistration();
+            registration.setStudent(user);
+            user.setStudentRegistration(registration);
         }
-        return studentRegistrationRepository.save(studentRegistration);
 
+        if (registration.getCoursesRegistered() == null) {
+            registration.setCoursesRegistered(new ArrayList<>());
+        }
+
+        if (!registration.getCoursesRegistered().contains(course)) {
+            registration.getCoursesRegistered().add(course);
+        }
+
+        studentRegistrationRepository.save(registration);
+        return mapToStudentRegistrationDTO(registration);
     }
 
-    public List<StudentRegistration> getRegisteredStudent() {
-        try {
-            List<StudentRegistration> students = studentRegistrationRepository.findAll();
-            return students;
-        } catch (NoSuchElementException e) {
-            throw new NoSuchElementException();
-        }
+    public List<StudentRegistrationDTO> getRegisteredStudents() {
+        List<StudentRegistration> students = studentRegistrationRepository.findAll();
+        return students.stream()
+                .map(this::mapToStudentRegistrationDTO)
+                .collect(Collectors.toList());
     }
 
-    public StudentRegistration addCourseToRegistration(Long registrationId, Long courseId) {
+
+    public StudentRegistrationDTO addCourseToRegistration(Long registrationId, Long courseId) {
         StudentRegistration registration = studentRegistrationRepository.findById(registrationId)
-                .orElseThrow(() -> new IllegalArgumentException("registration not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Registration not found"));
 
         CourseDetails course = courseDetailsRepository.findById(courseId)
                 .orElseThrow(() -> new IllegalArgumentException("Course not found"));
+
         if (!registration.getCoursesRegistered().contains(course)) {
             registration.getCoursesRegistered().add(course);
-
         } else {
             throw new IllegalStateException("Student is already registered for this course");
         }
 
-        return studentRegistrationRepository.save(registration);
+        studentRegistrationRepository.save(registration);
+
+        return mapToStudentRegistrationDTO(registration);
     }
 
-    public StudentRegistration removeCourseRegistration(Long registrationId, Long courseId) {
+    public StudentRegistrationDTO removeCourseRegistration(Long registrationId, Long courseId) {
         StudentRegistration registration = studentRegistrationRepository.findById(registrationId)
                 .orElseThrow(() -> new IllegalArgumentException("Student registration not found"));
 
@@ -92,8 +111,9 @@ public class StudentRegistrationService {
             throw new IllegalStateException("Course is not registered for this student");
         }
 
-        return studentRegistrationRepository.save(registration);
+        studentRegistrationRepository.save(registration);
 
+        return mapToStudentRegistrationDTO(registration);
     }
 
 }
