@@ -26,10 +26,12 @@ public class StudentRegistration {
     private Long id;
 
 
-
+    
     @OneToOne
     @JoinColumn(name = "user_id",nullable = false)
     private AppUser student;
+
+    private Long AppUserId;
 
     
     @ManyToMany

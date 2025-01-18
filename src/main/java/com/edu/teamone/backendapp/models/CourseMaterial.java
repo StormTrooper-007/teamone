@@ -21,8 +21,10 @@ public class CourseMaterial {
     private Long Id;
     private String title;
     private String url;
+    private Long userId;
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     private CourseDetails course;
+
 }

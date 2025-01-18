@@ -33,7 +33,7 @@ public class StudentRegistrationController {
         try {
             StudentRegistrationDTO student = studentRegistrationService.registerForCourse(username, courseId);
             return ResponseEntity.status(HttpStatus.CREATED).body(student);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }

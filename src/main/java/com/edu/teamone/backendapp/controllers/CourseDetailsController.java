@@ -29,9 +29,9 @@ public class CourseDetailsController {
     @PostMapping("/{username}")
     public ResponseEntity<CourseDetails> addNewCourse(@PathVariable String username, @RequestBody CourseDetails courseDetails) {
         try {
-           courseDetailsService.addCourse(username, courseDetails);
+          courseDetailsService.addCourse(username, courseDetails);
 
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         return null;

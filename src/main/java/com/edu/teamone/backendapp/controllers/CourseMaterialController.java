@@ -26,12 +26,12 @@ public class CourseMaterialController {
 
     private final CourseMaterialService courseMaterialService;
 
-    @PostMapping
-    public ResponseEntity<CourseMaterial> addNewCourseMaterial(@RequestBody CourseMaterial courseMaterial) {
+    @PostMapping("/{username}")
+    public ResponseEntity<CourseMaterial> addNewCourseMaterial(@PathVariable String username, @RequestBody CourseMaterial courseMaterial) {
         try {
-            courseMaterialService.addCourseMaterial(courseMaterial);
+            courseMaterialService.addCourseMaterial(username, courseMaterial);
             return ResponseEntity.status(HttpStatus.CREATED).body(courseMaterial);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }

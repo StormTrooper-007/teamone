@@ -2,9 +2,11 @@ package com.edu.teamone.backendapp.services;
 
 import java.util.List;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.edu.teamone.backendapp.exceptions.UserNotFoundException;
 import com.edu.teamone.backendapp.repositories.AppUserRepository;
 import com.edu.teamone.backendapp.security.AppUser;
 
@@ -30,6 +32,15 @@ public class AppUserService {
 
     public List<AppUser> getUsers(){
        return  appUserRepository.findAll();
+    }
+
+    public String getCurrentUserName(){
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    public AppUser getCurrAppUserId() throws UserNotFoundException{
+        return appUserRepository.findByUsername(getCurrentUserName())
+        .orElseThrow(() -> new UserNotFoundException("user not logged in"));
     }
     
 }

@@ -22,10 +22,15 @@ public class Assignment {
     private String submissionUrl;
     private String feedback;
     private String grade;
+    private Long userId;
 
     @ManyToOne
     @JoinColumn(name = "student_registration_id", nullable = false)
     StudentRegistration studentAssignedTo;
+
+    @ManyToOne
+    @JoinColumn(name = "course_id", nullable = false)
+    CourseDetails courseName;
 
     @ManyToOne
     @JoinColumn(name = "lecturer_id") // Track which lecturer graded this assignment

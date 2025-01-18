@@ -1,12 +1,16 @@
 package com.edu.teamone.backendapp.services;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.edu.teamone.backendapp.dtos.CourseDetailsDTO;
 import com.edu.teamone.backendapp.dtos.StudentRegistrationDTO;
+import com.edu.teamone.backendapp.exceptions.UnauthrorizedRoleException;
+import com.edu.teamone.backendapp.exceptions.UserNotFoundException;
 import com.edu.teamone.backendapp.models.CourseDetails;
 import com.edu.teamone.backendapp.models.StudentRegistration;
 import com.edu.teamone.backendapp.repositories.AppUserRepository;
@@ -40,17 +44,17 @@ public class StudentRegistrationService {
                 courses);
     }
 
-    public StudentRegistrationDTO registerForCourse(String username, Long courseId) {
+    public StudentRegistrationDTO registerForCourse(String username, Long courseId) throws UnauthrorizedRoleException, UserNotFoundException{
         AppUser user = appUserRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("User not logged in"));
+                .orElseThrow(() -> new NoSuchElementException("User not logged in"));
 
         if (!"STUDENT".equalsIgnoreCase(user.getRole())) {
-            throw new IllegalArgumentException("only users with role 'student' can register for courses");
+            throw new UnauthrorizedRoleException("only users with role 'student' can register for courses");
         }
 
         CourseDetails course = courseDetailsRepository
                 .findById(courseId)
-                .orElseThrow(() -> new IllegalArgumentException("course not found"));
+                .orElseThrow(() -> new NoSuchElementException("course not found"));
 
         StudentRegistration registration = user.getStudentRegistration();
 
@@ -66,6 +70,11 @@ public class StudentRegistrationService {
 
         if (!registration.getCoursesRegistered().contains(course)) {
             registration.getCoursesRegistered().add(course);
+        }
+        try{
+            registration.setAppUserId(user.getId());
+        }catch(Exception e){
+            throw new UserNotFoundException("user no logged in");
         }
 
         studentRegistrationRepository.save(registration);
@@ -90,7 +99,7 @@ public class StudentRegistrationService {
         if (!registration.getCoursesRegistered().contains(course)) {
             registration.getCoursesRegistered().add(course);
         } else {
-            throw new IllegalStateException("Student is already registered for this course");
+            throw new NoSuchElementException("Student is already registered for this course");
         }
 
         studentRegistrationRepository.save(registration);
@@ -100,10 +109,10 @@ public class StudentRegistrationService {
 
     public StudentRegistrationDTO removeCourseRegistration(Long registrationId, Long courseId) {
         StudentRegistration registration = studentRegistrationRepository.findById(registrationId)
-                .orElseThrow(() -> new IllegalArgumentException("Student registration not found"));
+                .orElseThrow(() -> new NoSuchElementException("Student registration not found"));
 
         CourseDetails course = courseDetailsRepository.findById(courseId)
-                .orElseThrow(() -> new IllegalArgumentException("Course not found"));
+                .orElseThrow(() -> new NoSuchElementException("Course not found"));
 
         if (registration.getCoursesRegistered().contains(course)) {
             registration.getCoursesRegistered().remove(course);
