@@ -3,6 +3,7 @@ package com.edu.teamone.backendapp.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.edu.teamone.backendapp.dtos.CourseDetailsDTO;
 import com.edu.teamone.backendapp.security.AppUser;
 
 import jakarta.persistence.CascadeType;
@@ -26,7 +27,7 @@ public class StudentRegistration {
     private Long id;
 
 
-    
+
     @OneToOne
     @JoinColumn(name = "user_id",nullable = false)
     private AppUser student;

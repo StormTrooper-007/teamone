@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StudentRegistrationDTO {
     private Long id;
-    private String studentUsername;
+    private Long appUserId;
     private List<CourseDetailsDTO> coursesRegistered;
 }

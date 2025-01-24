@@ -1,5 +1,8 @@
 package com.edu.teamone.backendapp.services;
 
+
+import com.edu.teamone.backendapp.dtos.CourseDetailsDTO;
+import com.edu.teamone.backendapp.dtos.CourseMaterialDTO;
 import com.edu.teamone.backendapp.exceptions.UnauthrorizedRoleException;
 import com.edu.teamone.backendapp.exceptions.UserNotFoundException;
 import com.edu.teamone.backendapp.models.CourseDetails;
@@ -9,11 +12,13 @@ import com.edu.teamone.backendapp.security.AppUser;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.security.core.context.SecurityContextHolder;
+
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 
 
@@ -24,6 +29,26 @@ public class CourseDetailsService{
     private final CourseDetailsRepository courseDetailsRepository;
     private final AppUserRepository appUserRepository;
     private final AppUserService appUserService;
+
+     private CourseDetailsDTO mapToCourseDetailsDTO(CourseDetails course) {
+        List<CourseMaterialDTO> materials = course.getCourseMaterials()
+                .stream()
+                .map(material -> new CourseMaterialDTO(
+                        material.getId(),
+                        material.getTitle(),
+                        material.getUrl(),
+                        material.getUserId()))
+                .collect(Collectors.toList());
+
+        return new CourseDetailsDTO(
+                course.getId(),
+                course.getCourseName(),
+                course.getDescription(),
+                course.getUserId(),
+                materials);
+    }
+
+              
 
     public CourseDetails addCourse(String username, CourseDetails newCourse) throws UserNotFoundException, UnauthrorizedRoleException{
          AppUser user = appUserRepository.findByUsername(username)
@@ -44,9 +69,13 @@ public class CourseDetailsService{
     }
 
     
-    public List<CourseDetails> getAllCourses() {
-        return courseDetailsRepository.findAll();
+     public List<CourseDetailsDTO> getAllCourses() {
+        List<CourseDetails> courses = courseDetailsRepository.findAll();
+        return courses.stream()
+                      .map(this::mapToCourseDetailsDTO)
+                      .collect(Collectors.toList());
     }
+        
 
     
     public CourseDetails editCourse(Long id, CourseDetails update) {

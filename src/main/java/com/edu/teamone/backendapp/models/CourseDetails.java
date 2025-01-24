@@ -3,7 +3,7 @@ package com.edu.teamone.backendapp.models;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.edu.teamone.backendapp.security.AppUser;
+import com.edu.teamone.backendapp.dtos.CourseDetailsDTO;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

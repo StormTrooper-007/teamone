@@ -1,5 +1,6 @@
 package com.edu.teamone.backendapp.controllers;
 
+import com.edu.teamone.backendapp.dtos.CourseDetailsDTO;
 import com.edu.teamone.backendapp.models.CourseDetails;
 import com.edu.teamone.backendapp.services.CourseDetailsService;
 
@@ -38,9 +39,9 @@ public class CourseDetailsController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CourseDetails>> getCourses() {
+    public ResponseEntity<List<CourseDetailsDTO>> getCourses() {
         try {
-            List<CourseDetails> courses = courseDetailsService.getAllCourses();
+            List<CourseDetailsDTO> courses = courseDetailsService.getAllCourses();
             return ResponseEntity.ok(courses);
 
         } catch (NoSuchElementException e) {

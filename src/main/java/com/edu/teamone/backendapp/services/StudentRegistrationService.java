@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.edu.teamone.backendapp.dtos.CourseDetailsDTO;
+import com.edu.teamone.backendapp.dtos.CourseMaterialDTO;
 import com.edu.teamone.backendapp.dtos.StudentRegistrationDTO;
 import com.edu.teamone.backendapp.exceptions.UnauthrorizedRoleException;
 import com.edu.teamone.backendapp.exceptions.UserNotFoundException;
@@ -28,19 +29,29 @@ public class StudentRegistrationService {
     private final CourseDetailsRepository courseDetailsRepository;
     private final StudentRegistrationRepository studentRegistrationRepository;
 
+
     private StudentRegistrationDTO mapToStudentRegistrationDTO(StudentRegistration registration) {
         // Map coursesRegistered from entities to DTOs
         List<CourseDetailsDTO> courses = registration.getCoursesRegistered().stream()
                 .map(course -> new CourseDetailsDTO(
                         course.getId(),
                         course.getCourseName(),
-                        course.getDescription()))
+                        course.getDescription(),
+                        course.getUserId(), // Include userId if needed
+                        course.getCourseMaterials().stream()
+                                .map(material -> new CourseMaterialDTO(
+                                        material.getId(),
+                                        material.getTitle(),
+                                        material.getUrl(),
+                                        material.getUserId()))
+                                .collect(Collectors.toList())
+                ))
                 .collect(Collectors.toList());
 
         // Map StudentRegistration fields to StudentRegistrationDTO
         return new StudentRegistrationDTO(
                 registration.getId(),
-                registration.getStudent().getUsername(),
+                registration.getStudent().getId(),
                 courses);
     }
 

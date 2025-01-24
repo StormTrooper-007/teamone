@@ -27,7 +27,8 @@ public class CourseMaterialController {
     private final CourseMaterialService courseMaterialService;
 
     @PostMapping("/{username}")
-    public ResponseEntity<CourseMaterial> addNewCourseMaterial(@PathVariable String username, @RequestBody CourseMaterial courseMaterial) {
+    public ResponseEntity<CourseMaterial> addNewCourseMaterial(
+        @PathVariable String username, @RequestBody CourseMaterial courseMaterial) {
         try {
             courseMaterialService.addCourseMaterial(username, courseMaterial);
             return ResponseEntity.status(HttpStatus.CREATED).body(courseMaterial);
@@ -35,7 +36,8 @@ public class CourseMaterialController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
-
+    
+    
     @GetMapping
     public ResponseEntity<List<CourseMaterial>> getMaterials() {
         try {
